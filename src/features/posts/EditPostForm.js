@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { selectAllUsers } from "../users/usersSlice";
+
+import { useGetUsersQuery } from "../users/usersSlice";
 import { useGetPostsQuery } from "./postsSlice";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -23,7 +23,8 @@ const EditPostForm = () => {
       isSuccess,
     }),
   });
-  const users = useSelector(selectAllUsers);
+  const { data: users, isSuccess: isUsersSuccess } =
+    useGetUsersQuery("getUsers");
 
   const [title, setTitle] = useState(post?.title);
   const [content, setContent] = useState(post?.body);
@@ -87,11 +88,14 @@ const EditPostForm = () => {
     }
   };
 
-  const usersOptions = users.map((user) => (
-    <option key={user.id} value={user.id}>
-      {user.name}
-    </option>
-  ));
+  let usersOptions;
+  if (isUsersSuccess) {
+    usersOptions = users.ids.map((id) => (
+      <option key={id} value={id}>
+        {users.entities[id].name}
+      </option>
+    ));
+  }
 
   return (
     <section>

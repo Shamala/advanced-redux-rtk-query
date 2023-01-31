@@ -10,13 +10,14 @@ import { Link } from "react-router-dom";
 const SinglePostPage = () => {
   const { postId } = useParams();
 
-  const { post } = useGetPostsQuery("getPosts", {
+  const { post, isLoading } = useGetPostsQuery("getPosts", {
     selectFromResult: ({ data, isLoading }) => ({
       post: data?.entities[postId],
       isLoading,
     }),
   });
 
+  if (isLoading) return <p> Loading...</p>;
   if (!post) {
     return (
       <section>
